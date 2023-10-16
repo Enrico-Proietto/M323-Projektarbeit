@@ -15,7 +15,8 @@ import java.util.Scanner;
 public class Application {
     private static final String filePath = "Data/Data.json";
     public static void main(String[] args) {
-        printAveragePopulationData("Bern");
+        /*printAveragePopulationData("Bern");*/
+        printDataOf();
     }
 
     private static void printAveragePopulationData(String nameOfState) {
@@ -85,4 +86,59 @@ public class Application {
         return null;
     }
 
+    private static void printDataOf(){
+        try {
+            // Read the JSON data from the file
+            FileReader fileReader = new FileReader(filePath);
+            JsonElement jsonElement = JsonParser.parseReader(fileReader);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            fileReader.close();
+
+            // Create a map to store the population for each state in each year
+            Map<String, Map<String, Integer>> statePopulations = new HashMap<>();
+
+            // Iterate through the years (2020, 2030, 2040, 2050)
+            for (int year = 2020; year <= 2050; year += 10) {
+                String yearKey = String.valueOf(year);
+                if (jsonObject.has(yearKey)) {
+                    JsonObject yearData = jsonObject.getAsJsonObject(yearKey);
+
+                    // Iterate through locations within the year
+                    for (String location : yearData.keySet()) {
+                        String populationString = yearData.get(location).getAsString();
+                        try {
+                            // Parse the population string to an integer
+                            int population = NumberFormat.getNumberInstance().parse(populationString).intValue();
+                            // Extract the state name from the location
+                            String stateName = location.split(" ")[0];
+
+                            // Update the population for the state and year
+                            if (!statePopulations.containsKey(stateName)) {
+                                statePopulations.put(stateName, new HashMap<>());
+                            }
+                            statePopulations.get(stateName).put(yearKey, population);
+                        } catch (ParseException e) {
+                            System.err.println("Error parsing population for " + location);
+                        }
+                    }
+                }
+            }
+
+            // Calculate and print the percentage change for each state
+            for (String state : statePopulations.keySet()) {
+                Map<String, Integer> stateData = statePopulations.get(state);
+                int population2030 = stateData.get("2030");
+                int population2040 = stateData.get("2040");
+                int population2050 = stateData.get("2050");
+
+                double percentageChange2030to2040 = ((double) (population2040 - population2030) / population2030) * 100;
+                double percentageChange2040to2050 = ((double) (population2050 - population2040) / population2040) * 100;
+
+                System.out.println(state + " - Population Change 2030-2040: " + percentageChange2030to2040 + "%");
+                System.out.println(state + " - Population Change 2040-2050: " + percentageChange2040to2050 + "%");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
