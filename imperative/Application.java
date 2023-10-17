@@ -266,6 +266,4 @@ public class Application {
         }
         return "bern";
     }
-=======
->>>>>>> 2ff4d02a520c14094416d23f347df02be7a18235
 }
