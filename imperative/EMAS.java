@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Application {
+public class EMAS {
     private static final String filePath = "Data/Data.json";
 
     public static void main(String[] args) throws InterruptedException {
