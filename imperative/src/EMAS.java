@@ -99,7 +99,7 @@ public class EMAS {
      * @param cantonName The name of a specific canton chosen by the user.
      * @Link getData()
      */
-    private static void getAveragePopulationData(String cantonName) {
+    private statgit ic void getAveragePopulationData(String cantonName) {
         long begin = System.currentTimeMillis(); // For documentation
         if (!cantonName.equals("canton")) {
             List<Double> listOfPopulation = new ArrayList<>();
